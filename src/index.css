@@ -1,0 +1,442 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Pixelcut AI - Studio Light Design System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@layer base {
+  :root {
+    /* Core Palette - Studio Light */
+    --background: 0 0% 100%;
+    --foreground: 220 13% 10%;
+    
+    /* Surface Colors */
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 10%;
+    
+    /* Royal Blue Accent */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 217 91% 70%;
+    --primary-soft: 217 91% 95%;
+    
+    /* Soft Grays */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 13% 30%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 55%;
+    
+    /* Accent & States */
+    --accent: 217 91% 97%;
+    --accent-foreground: 217 91% 50%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Structural */
+    --border: 220 13% 91%;
+    --border-subtle: 220 13% 95%;
+    --input: 220 14% 96%;
+    --ring: 217 91% 60%;
+    
+    /* Semantic Colors */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    /* Glass Effects */
+    --glass-bg: 0 0% 100% / 0.7;
+    --glass-border: 220 13% 91% / 0.5;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(220 13% 10% / 0.03);
+    --shadow-md: 0 4px 6px -1px hsl(220 13% 10% / 0.05), 0 2px 4px -2px hsl(220 13% 10% / 0.03);
+    --shadow-lg: 0 10px 15px -3px hsl(220 13% 10% / 0.05), 0 4px 6px -4px hsl(220 13% 10% / 0.03);
+    --shadow-glow: 0 0 40px -10px hsl(217 91% 60% / 0.3);
+    
+    /* Radii */
+    --radius: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-2xl: 2rem;
+    --radius-3xl: 3rem;
+    
+    /* Sidebar (keeping for compatibility) */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 220 13% 26%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 13% 26%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    /* Core Palette - Studio Dark */
+    --background: 224 30% 6%;
+    --foreground: 210 40% 98%;
+    
+    /* Surface Colors */
+    --card: 224 30% 8%;
+    --card-foreground: 210 40% 98%;
+    --popover: 224 30% 8%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Royal Blue Accent - slightly brighter in dark */
+    --primary: 217 91% 65%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 217 91% 75%;
+    --primary-soft: 217 50% 15%;
+    
+    /* Dark Grays */
+    --secondary: 224 20% 12%;
+    --secondary-foreground: 210 40% 90%;
+    --muted: 224 20% 14%;
+    --muted-foreground: 215 15% 55%;
+    
+    /* Accent & States */
+    --accent: 224 20% 14%;
+    --accent-foreground: 217 91% 70%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Structural */
+    --border: 224 20% 18%;
+    --border-subtle: 224 20% 12%;
+    --input: 224 20% 14%;
+    --ring: 217 91% 65%;
+    
+    /* Success */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    
+    /* Glass Effects - darker */
+    --glass-bg: 224 30% 8% / 0.8;
+    --glass-border: 224 20% 20% / 0.5;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.2);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -2px hsl(0 0% 0% / 0.2);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.3), 0 4px 6px -4px hsl(0 0% 0% / 0.2);
+    --shadow-glow: 0 0 40px -10px hsl(217 91% 65% / 0.4);
+    
+    /* Sidebar */
+    --sidebar-background: 224 30% 8%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 217 91% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 224 20% 14%;
+    --sidebar-accent-foreground: 210 40% 90%;
+    --sidebar-border: 224 20% 18%;
+    --sidebar-ring: 217 91% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.3);
+  }
+}
+
+@layer components {
+  /* Glassmorphism */
+  .glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--glass-border));
+  }
+
+  .glass-heavy {
+    background: hsl(var(--background) / 0.85);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-bottom: 1px solid hsl(var(--border-subtle));
+  }
+
+  /* Premium Button Styles */
+  .btn-premium {
+    @apply relative overflow-hidden transition-all duration-300 ease-out;
+    @apply hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-premium::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    @apply -translate-x-full transition-transform duration-500;
+  }
+
+  .btn-premium:hover::after {
+    @apply translate-x-full;
+  }
+
+  /* Glow Effect */
+  .glow-primary {
+    box-shadow: 0 0 40px -10px hsl(var(--primary) / 0.4);
+  }
+
+  .glow-success {
+    box-shadow: 0 0 20px -5px hsl(var(--success) / 0.4);
+  }
+
+  /* Dot Grid Background */
+  .dot-grid {
+    background-image: radial-gradient(hsl(var(--border)) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .dot-grid-fade {
+    background-image: radial-gradient(hsl(var(--border)) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 40%, transparent 100%);
+  }
+
+  /* Hairline borders */
+  .hairline {
+    border-width: 0.5px;
+    border-color: hsl(var(--border-subtle));
+  }
+
+  /* Message bubbles */
+  .bubble-ai {
+    @apply bg-secondary text-secondary-foreground rounded-2xl rounded-bl-md px-4 py-3;
+  }
+
+  .bubble-user {
+    @apply bg-primary text-primary-foreground rounded-2xl rounded-br-md px-4 py-3;
+  }
+
+  /* Timeline blocks */
+  .timeline-block {
+    @apply rounded-lg transition-all duration-200;
+  }
+
+  .timeline-block-video {
+    @apply bg-primary/20 border border-primary/30;
+  }
+
+  .timeline-block-cut {
+    @apply bg-destructive/10 border border-destructive/20;
+  }
+}
+
+@layer utilities {
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent;
+  }
+
+  /* Spacing */
+  .spacing-studio {
+    letter-spacing: 0.1em;
+  }
+
+  .spacing-wide {
+    letter-spacing: 0.05em;
+  }
+}
+
+/* Keyframe Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.5);
+  }
+}
+
+@keyframes blob-float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+@keyframes playhead-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes success-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes confirm-flash {
+  /* Preserve text opacity and avoid scaling; animate glow/border only */
+  0%, 100% {
+    box-shadow: 0 6px 18px -8px rgba(16,185,129,0.35);
+    border-color: rgba(16,185,129,0.18);
+  }
+  50% {
+    box-shadow: 0 10px 28px -10px rgba(16,185,129,0.45);
+    border-color: rgba(16,185,129,0.28);
+  }
+}
+
+/* Animation Classes */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--primary) / 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-spin-slower {
+  animation: spin-slow 30s linear infinite reverse;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-blob {
+  animation: blob-float 20s ease-in-out infinite;
+}
+
+.animate-playhead {
+  animation: playhead-pulse 1.5s ease-in-out infinite;
+}
+
+/* Slower, subtler green success pulse for status indicators */
+.animate-success-pulse {
+  animation: success-pulse 1.5s ease-in-out infinite;
+}
+
+/* Slower, slightly brighter flash for confirm/CTA buttons */
+.animate-confirm-flash {
+  animation: confirm-flash 2s ease-in-out infinite;
+  will-change: box-shadow, border-color;
+}
+
+/* Staggered animations */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }

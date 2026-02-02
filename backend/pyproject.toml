@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pixelcut-tools"
+version = "0.1.0"
+description = "PixelCut video editing tools (trim, remove, mute, retime, text overlay)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = []
+
+[tool.setuptools]
+py-modules = ["tools"]
