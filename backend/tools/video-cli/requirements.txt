@@ -1,4 +1,0 @@
-imageio>=2.5
-imageio-ffmpeg
-imgviz
-tqdm
