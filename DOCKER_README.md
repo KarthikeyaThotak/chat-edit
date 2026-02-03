@@ -1,9 +1,10 @@
-# Docker Setup for Drafft Backend
+# Docker Setup for Drafft
 
-This setup containerizes all backend services including Python APIs and MySQL database.
+This setup containerizes all services including frontend, backend APIs, and MySQL database.
 
 ## Services
 
+- **Frontend** (Port 8080) - React/Vite development server
 - **MySQL Database** (Port 3306)
 - **Main Backend API** (Port 8000) - FastAPI server with video editing tools
 - **Transcript Backend API** (Port 8001) - Gemini-based transcript generation
@@ -75,6 +76,9 @@ docker-compose down -v
 
 Once running, services are available at:
 
+- **Frontend**: http://localhost:8080
+  - React/Vite development server with hot-reload
+
 - **Main API**: http://localhost:8000
   - API docs: http://localhost:8000/docs
   - Endpoints: `/upload`, `/chat`, `/download/{video_id}`, `/tools/*`
@@ -90,11 +94,13 @@ Once running, services are available at:
 
 ```bash
 # View logs for specific service
+docker-compose logs -f frontend
 docker-compose logs -f backend-main
 docker-compose logs -f backend-transcript
 docker-compose logs -f mysql
 
 # Restart a service
+docker-compose restart frontend
 docker-compose restart backend-main
 
 # Execute command in container

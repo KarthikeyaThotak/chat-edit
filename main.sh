@@ -40,6 +40,7 @@ check_port() {
 }
 
 # Check ports
+check_port 8080
 check_port 8000
 check_port 8001
 check_port 3306
@@ -73,9 +74,9 @@ echo "📋 Initializing database schema..."
 sleep 2
 docker-compose exec -T mysql mysql -uroot -p${DB_PASSWORD:-rootpassword} ${DB_NAME:-pixelcut_db} < database/schema.sql 2>/dev/null || echo "⚠️  Schema initialization skipped (may already exist)"
 
-# Start backend services
-echo "🚀 Starting backend services..."
-docker-compose up -d backend-main backend-transcript
+# Start backend and frontend services
+echo "🚀 Starting backend and frontend services..."
+docker-compose up -d backend-main backend-transcript frontend
 
 # Wait a moment for services to start
 sleep 3
@@ -89,6 +90,7 @@ echo ""
 echo "✅ All services are running!"
 echo ""
 echo "🌐 Service URLs:"
+echo "   Frontend:      http://localhost:8080"
 echo "   Main API:      http://localhost:8000"
 echo "   Transcript API: http://localhost:8001"
 echo "   MySQL:         localhost:3306"
@@ -99,4 +101,4 @@ echo "   Stop services: docker-compose down"
 echo "   Restart:       docker-compose restart"
 echo ""
 echo "🔍 To view logs in real-time, run:"
-echo "   docker-compose logs -f backend-main backend-transcript"
+echo "   docker-compose logs -f frontend backend-main backend-transcript"
