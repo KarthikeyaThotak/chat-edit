@@ -102,3 +102,4 @@ echo "   Restart:       docker-compose restart"
 echo ""
 echo "🔍 To view logs in real-time, run:"
 echo "   docker-compose logs -f frontend backend-main backend-transcript"
+
