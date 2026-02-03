@@ -20,11 +20,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend code
 COPY . .
 
-# Build video-cli wheel if needed
+# Build and install video-cli wheel
 RUN if [ -d "tools/video-cli" ]; then \
     cd tools/video-cli && \
     pip install wheel && \
-    pip wheel . --no-deps -w .. || true; \
+    pip wheel . --no-deps -w .. && \
+    cd .. && \
+    pip install video_cli-*.whl || true; \
     fi
 
 # Create uploads directory
