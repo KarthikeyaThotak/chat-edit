@@ -29,6 +29,14 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
+# Clean up any old/corrupted containers
+echo "🧹 Cleaning up old containers..."
+docker-compose down -v 2>/dev/null || true
+docker-compose rm -f 2>/dev/null || true
+
+# Remove any corrupted containers
+docker ps -a --filter "name=drafft-" --format "{{.ID}}" | xargs -r docker rm -f 2>/dev/null || true
+
 # Function to check if a port is in use
 check_port() {
     local port=$1
