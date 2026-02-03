@@ -54,8 +54,8 @@ const Navbar = ({ activeTab, onTabChange }: NavbarProps) => {
           
           {/* Brand Text */}
           <div className="flex items-baseline">
-            <span className="text-sm font-bold text-foreground tracking-tight">Drafft</span>
-            <span className="text-sm font-medium text-primary ml-0.5">AI</span>
+            <span className="text-sm font-bold text-foreground tracking-tight">Draf</span>
+            <span className="text-sm font-medium text-primary ml-0.5">ft</span>
           </div>
         </motion.div>
 
