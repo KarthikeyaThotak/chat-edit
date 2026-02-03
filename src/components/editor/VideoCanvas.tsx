@@ -54,7 +54,7 @@ const VideoCanvas = () => {
   // --- NEW: Effect to listen for the "videoUpdated" signal from AIChat.tsx ---
   useEffect(() => {
     const handleVideoUpdate = () => {
-      const videoId = localStorage.getItem("pixelcut_video_id");
+      const videoId = localStorage.getItem("drafft_video_id");
       if (videoId) {
         loadRemoteVideo(videoId);
       }
@@ -66,7 +66,7 @@ const VideoCanvas = () => {
 
   // Updated Effect: Handles initial upload AND existing session recovery
   useEffect(() => {
-    const existingId = localStorage.getItem("pixelcut_video_id");
+    const existingId = localStorage.getItem("drafft_video_id");
     
     // If we already have a processed ID, use it. Otherwise, use the local file.
     if (existingId) {

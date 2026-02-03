@@ -20,7 +20,7 @@ const GalleryTab = () => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const videoId = localStorage.getItem("pixelcut_video_id");
+    const videoId = localStorage.getItem("drafft_video_id");
     if (videoId) {
       // Using the same endpoint as the editor
       setVideoUrl(`https://api.pixelcut.shop/download/${videoId}`);

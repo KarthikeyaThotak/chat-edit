@@ -166,15 +166,15 @@ const LobbyTab = () => {
             </svg>
             <span>AI is analyzing</span>
           </div>
-        ),
-        description: <span className="text-xs text-muted-foreground">Gemini is scanning speech & actions</span>,
+        ) as any,
+        description: <span className="text-xs text-muted-foreground">Gemini is scanning speech & actions</span> as any,
       });
 
       // Pulse the toast every 3s (briefly toggle to re-animate). Will be cleared on completion.
       const aiPulse = setInterval(() => {
         try {
-          aiToast.update({ open: false });
-          setTimeout(() => aiToast.update({ open: true }), 180);
+          aiToast.update({ id: aiToast.id, open: false });
+          setTimeout(() => aiToast.update({ id: aiToast.id, open: true }), 180);
         } catch (e) {
           // ignore if toast no longer exists
         }
@@ -191,19 +191,21 @@ const LobbyTab = () => {
 
       if (!aiResponse.ok) {
         aiToast.update({
+          id: aiToast.id,
           title: <span>AI analysis failed</span>,
           description: <span className="text-xs text-destructive">Check your local AI service.</span>,
           variant: "destructive",
-        });
+        } as any);
         throw new Error("AI Engine failed.");
       }
       const transcriptData = await aiResponse.json();
 
       // Update the AI toast to success before starting sync
       aiToast.update({
+        id: aiToast.id,
         title: <span>Analysis complete</span>,
         description: <span className="text-xs text-muted-foreground">Transcript ready — preparing upload</span>,
-      });
+      } as any);
       clearInterval(aiPulse);
 
       // 2. Production Sync Hop (modern sync toast)
@@ -216,14 +218,14 @@ const LobbyTab = () => {
             </svg>
             <span>Syncing to cloud</span>
           </div>
-        ),
-        description: <span className="text-xs text-muted-foreground">Uploading to remote storage</span>,
+        ) as any,
+        description: <span className="text-xs text-muted-foreground">Uploading to remote storage</span> as any,
       });
 
       const syncPulse = setInterval(() => {
         try {
-          syncToast.update({ open: false });
-          setTimeout(() => syncToast.update({ open: true }), 180);
+          syncToast.update({ id: syncToast.id, open: false });
+          setTimeout(() => syncToast.update({ id: syncToast.id, open: true }), 180);
         } catch (e) {}
       }, 3000);
 
@@ -239,10 +241,11 @@ const LobbyTab = () => {
       if (!finalResponse.ok) {
         clearInterval(syncPulse);
         syncToast.update({
+          id: syncToast.id,
           title: <span>Sync failed</span>,
           description: <span className="text-xs text-destructive">Remote upload failed.</span>,
           variant: "destructive",
-        });
+        } as any);
         throw new Error("Production sync failed.");
       }
 
@@ -250,7 +253,7 @@ const LobbyTab = () => {
       
       // Store ID for future edit requests
       if (result.video_id) {
-        localStorage.setItem("pixelcut_video_id", result.video_id.toString());
+        localStorage.setItem("drafft_video_id", result.video_id.toString());
         console.log("Stored video ID:", result.video_id);
       }
 
@@ -330,10 +333,10 @@ const LobbyTab = () => {
           {/* Main Title */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[0.9]">
             <span className="bg-gradient-to-b from-foreground via-foreground to-foreground/50 bg-clip-text text-transparent">
-              PIXEL
+              Draf
             </span>
             <span className="bg-gradient-to-r from-primary via-primary to-indigo-500 bg-clip-text text-transparent">
-              CUT
+              ft
             </span>
           </h1>
 

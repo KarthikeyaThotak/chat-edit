@@ -24,7 +24,7 @@ const AIChat = () => {
     if (!input.trim() || isLoading) return;
 
     // 1. Get video_id from storage
-    const videoId = localStorage.getItem("pixelcut_video_id");
+    const videoId = localStorage.getItem("drafft_video_id");
     if (!videoId) {
       alert("No active video session found. Please upload a video first.");
       return;
@@ -61,7 +61,7 @@ const AIChat = () => {
 
       if (data.video_id) {
         // 1. Update storage
-        localStorage.setItem("pixelcut_video_id", data.video_id.toString());
+        localStorage.setItem("drafft_video_id", data.video_id.toString());
         
         // 2. Find the text to use as the operation name
         const aiText = data.response.find((r: any) => r.type === "text")?.text || "Video Edit";
