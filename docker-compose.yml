@@ -89,6 +89,22 @@ services:
     networks:
       - drafft-network
 
+  nginx:
+    image: nginx:alpine
+    container_name: drafft-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend-main
+      - backend-transcript
+    networks:
+      - drafft-network
+    restart: unless-stopped
+
 volumes:
   mysql_data:
 
