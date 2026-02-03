@@ -1,162 +1,102 @@
-#!/usr/bin/env bash
-#
-# PixelCut - Main setup and run script
-# Sets up ffmpeg, MySQL/MariaDB, Python backend, video-cli (editable install), and runs the FastAPI server.
-#
+#!/bin/bash
+
+# Main script to run all Python services and databases
+# This script sets up and runs the entire backend infrastructure
 
 set -e
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BACKEND_DIR="$SCRIPT_DIR/backend"
-VIDEO_CLI_DIR="$BACKEND_DIR/tools/video-cli"
-DB_NAME="pixelcut_db"
-HOST="${HOST:-0.0.0.0}"
-PORT="${PORT:-8000}"
 
-# --- Help ---
-usage() {
-    echo "Usage: $0"
-    echo "  Sets up ffmpeg, MySQL, backend venv, video_cli (pip install -e .), and starts the FastAPI server."
-    echo ""
-    echo "  Server: http://$HOST:$PORT"
-    echo "  Override: HOST=127.0.0.1 PORT=9000 $0"
-    exit 0
-}
-[[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] && usage
+echo "🚀 Starting Drafft Backend Services..."
 
-# --- 1. System deps (ffmpeg) ---
-setup_ffmpeg() {
-    echo ""
-    echo "[1/5] System (ffmpeg)"
-    echo "----------------------------------------"
-
-    if ! command -v ffmpeg &>/dev/null; then
-        echo "Installing ffmpeg..."
-        sudo apt-get update -qq
-        sudo apt-get install -y ffmpeg
+# Check if .env file exists
+if [ ! -f ".env" ]; then
+    echo "⚠️  Warning: .env file not found. Creating from .env.example if it exists..."
+    if [ -f ".env.example" ]; then
+        cp .env.example .env
+        echo "📝 Created .env from .env.example. Please update it with your actual values."
     else
-        echo "ffmpeg already installed."
+        echo "❌ Error: .env file not found and .env.example doesn't exist."
+        echo "Please create a .env file with required environment variables."
+        exit 1
     fi
-}
+fi
 
-# --- 2. Database ---
-setup_database() {
-    echo ""
-    echo "[2/5] Database (MySQL/MariaDB)"
-    echo "----------------------------------------"
+# Load environment variables
+export $(cat .env | grep -v '^#' | xargs)
 
-    if ! command -v mysql &>/dev/null; then
-        echo "Installing MariaDB..."
-        sudo apt-get update -qq
-        sudo apt-get install -y mariadb-server mariadb-client
-    fi
+# Check if Docker is running
+if ! docker info > /dev/null 2>&1; then
+    echo "❌ Error: Docker is not running. Please start Docker and try again."
+    exit 1
+fi
 
-    if ! (pgrep -x mysqld >/dev/null || pgrep -x mariadb >/dev/null); then
-        echo "Starting MariaDB..."
-        sudo service mariadb start 2>/dev/null || sudo systemctl start mariadb 2>/dev/null || true
+# Function to check if a port is in use
+check_port() {
+    local port=$1
+    if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1 ; then
+        echo "⚠️  Port $port is already in use. Stopping existing container..."
+        docker-compose down
         sleep 2
     fi
-
-    if mysql -u root -e "USE $DB_NAME;" 2>/dev/null; then
-        echo "Database $DB_NAME exists."
-        return 0
-    fi
-
-    echo "Creating database and tables..."
-    if sudo mysql < "$SCRIPT_DIR/database/schema.sql" 2>/dev/null; then
-        echo "Database and tables created."
-    else
-        echo "Could not run schema. Run manually:"
-        echo "  sudo mysql < $SCRIPT_DIR/database/schema.sql"
-        echo "  or: mysql -u root -p < $SCRIPT_DIR/database/schema.sql"
-        return 1
-    fi
 }
 
-# --- 3. Backend venv and deps ---
-VENV_DIR="venv-genai"
-setup_backend() {
-    echo ""
-    echo "[3/5] Backend (Python venv: $VENV_DIR)"
-    echo "----------------------------------------"
+# Check ports
+check_port 8000
+check_port 8001
+check_port 3306
 
-    cd "$BACKEND_DIR"
+# Build and start services
+echo "📦 Building Docker images..."
+docker-compose build
 
-    if [[ ! -d "$VENV_DIR" ]]; then
-        echo "Creating virtual environment ($VENV_DIR)..."
-        python3 -m venv "$VENV_DIR"
+echo "🗄️  Starting MySQL database..."
+docker-compose up -d mysql
+
+# Wait for MySQL to be ready
+echo "⏳ Waiting for MySQL to be ready..."
+timeout=60
+counter=0
+while ! docker-compose exec -T mysql mysqladmin ping -h localhost --silent >/dev/null 2>&1; do
+    sleep 2
+    counter=$((counter + 2))
+    if [ $counter -ge $timeout ]; then
+        echo "❌ Error: MySQL failed to start within $timeout seconds"
+        docker-compose logs mysql
+        exit 1
     fi
+    echo -n "."
+done
+echo ""
+echo "✅ MySQL is ready!"
 
-    echo "Activating venv and installing requirements..."
-    source "$VENV_DIR/bin/activate"
-    pip install -q "google-genai==1.61.0" "anyio>=4.8,<5"
-    pip install -q -r requirements.txt
-    echo "Backend ready."
-}
+# Initialize database schema if needed
+echo "📋 Initializing database schema..."
+sleep 2
+docker-compose exec -T mysql mysql -uroot -p${DB_PASSWORD:-rootpassword} ${DB_NAME:-pixelcut_db} < database/schema.sql 2>/dev/null || echo "⚠️  Schema initialization skipped (may already exist)"
 
-# --- 4. Tools (video_cli editable install) ---
-setup_tools() {
-    echo ""
-    echo "[4/5] Tools (video_cli editable install)"
-    echo "----------------------------------------"
+# Start backend services
+echo "🚀 Starting backend services..."
+docker-compose up -d backend-main backend-transcript
 
-    cd "$BACKEND_DIR"
-    source "$BACKEND_DIR/$VENV_DIR/bin/activate"
+# Wait a moment for services to start
+sleep 3
 
-    if [[ -d "$VIDEO_CLI_DIR" && -f "$VIDEO_CLI_DIR/setup.py" ]]; then
-        echo "Installing video_cli in editable mode (pip install -e .)..."
-        pip install -e "$VIDEO_CLI_DIR"
-        echo "video_cli installed (editable)."
-    else
-        echo "No video-cli source at $VIDEO_CLI_DIR; skipping. Install manually if needed."
-    fi
+# Show status
+echo ""
+echo "📊 Service Status:"
+docker-compose ps
 
-    echo "Tools ready."
-}
-
-# --- 5. Run server ---
-run_server() {
-    echo ""
-    echo "[5/5] Server"
-    echo "----------------------------------------"
-    cd "$BACKEND_DIR"
-    source "$BACKEND_DIR/$VENV_DIR/bin/activate"
-
-    # Load .env so GOOGLE_API_KEY is set for Gemini (avoids gcloud ADC / scope errors)
-    if [[ -f "$SCRIPT_DIR/.env" ]]; then
-        set -a
-        source "$SCRIPT_DIR/.env"
-        set +a
-    fi
-    if [[ -f "$BACKEND_DIR/.env" ]]; then
-        set -a
-        source "$BACKEND_DIR/.env"
-        set +a
-    fi
-
-    echo "API:  http://$HOST:$PORT"
-    echo "Docs: http://$HOST:$PORT/docs"
-    echo ""
-    echo "Endpoints:"
-    echo "  POST /upload              - upload video"
-    echo "  GET  /download/{id}       - download video"
-    echo "  POST /tools/trim          - trim [start, end]"
-    echo "  POST /tools/remove_segment"
-    echo "  POST /tools/mute_segment"
-    echo "  POST /tools/retime        - speed factor"
-    echo "  POST /tools/add_text_overlay"
-    echo ""
-
-    exec uvicorn main:app --host "$HOST" --port "$PORT" --workers 4
-}
-
-# --- Main ---
-main() {
-    echo "=== PixelCut ==="
-    setup_ffmpeg
-    setup_database
-    setup_backend
-    setup_tools
-    run_server
-}
-
-main "$@"
+echo ""
+echo "✅ All services are running!"
+echo ""
+echo "🌐 Service URLs:"
+echo "   Main API:      http://localhost:8000"
+echo "   Transcript API: http://localhost:8001"
+echo "   MySQL:         localhost:3306"
+echo ""
+echo "📝 Useful commands:"
+echo "   View logs:     docker-compose logs -f"
+echo "   Stop services: docker-compose down"
+echo "   Restart:       docker-compose restart"
+echo ""
+echo "🔍 To view logs in real-time, run:"
+echo "   docker-compose logs -f backend-main backend-transcript"

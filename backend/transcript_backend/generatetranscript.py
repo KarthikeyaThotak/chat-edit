@@ -38,6 +38,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {"message": "Hello World from transcript backend"}
+
 @app.post("/generate-transcript")
 async def generate_transcript(video: UploadFile = File(...)):
     # 1. Save video locally for Gemini upload
