@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useVideoContext } from "@/hooks/useVideoContext";
+import { API_CONFIG } from "@/config/api";
 
 interface TimelineBlock {
   id: string;
@@ -36,7 +37,7 @@ const VideoCanvas = () => {
 
   // --- NEW: Helper function to load the video from the backend ---
   const loadRemoteVideo = (id: string) => {
-    const remoteUrl = `http://localhost:8000/download/${id}?t=${Date.now()}`;
+    const remoteUrl = `${API_CONFIG.MAIN_API}/download/${id}?t=${Date.now()}`;
     setVideoUrl(remoteUrl);
 
     const tempVideo = document.createElement("video");

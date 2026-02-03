@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useVideoContext } from "@/hooks/useVideoContext";
+import { API_CONFIG } from "@/config/api";
 
 const developers = [
   { name: "Chanuth Jayatissa", avatar: "/placeholder.svg" },
@@ -23,7 +24,7 @@ const GalleryTab = () => {
     const videoId = localStorage.getItem("drafft_video_id");
     if (videoId) {
       // Using the same endpoint as the editor
-      setVideoUrl(`http://localhost:8000/download/${videoId}`);
+      setVideoUrl(`${API_CONFIG.MAIN_API}/download/${videoId}`);
     }
   }, []);
 

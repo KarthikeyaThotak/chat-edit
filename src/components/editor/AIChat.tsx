@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { API_CONFIG } from "@/config/api";
 
 interface Message {
   id: string;
@@ -44,7 +45,7 @@ const AIChat = () => {
 
     try {
       // 2. Send request to backend
-      const response = await fetch("http://localhost:8000/chat", {
+      const response = await fetch(`${API_CONFIG.MAIN_API}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

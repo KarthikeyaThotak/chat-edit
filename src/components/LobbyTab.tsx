@@ -4,6 +4,7 @@ import { toast } from "@/hooks/use-toast";
 import { Slider } from "@/components/ui/slider";
 import { Play, Pause, X } from "lucide-react";
 import { useVideoContext } from "@/hooks/useVideoContext";
+import { API_CONFIG } from "@/config/api";
 
 const ACCEPTED_VIDEO_TYPES = ['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/webm', 'video/x-matroska'];
 
@@ -184,7 +185,7 @@ const LobbyTab = () => {
       const aiFormData = new FormData();
       aiFormData.append("video", selectedVideo);
 
-      const aiResponse = await fetch("http://localhost:8001/generate-transcript", {
+      const aiResponse = await fetch(`${API_CONFIG.TRANSCRIPT_API}/generate-transcript`, {
         method: "POST",
         body: aiFormData,
       });
@@ -233,7 +234,7 @@ const LobbyTab = () => {
       finalFormData.append("video", selectedVideo);
       finalFormData.append("transcript", JSON.stringify(transcriptData));
 
-      const finalResponse = await fetch("http://localhost:8000/upload", {
+      const finalResponse = await fetch(`${API_CONFIG.MAIN_API}/upload`, {
         method: "POST",
         body: finalFormData,
       });
