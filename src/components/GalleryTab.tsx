@@ -23,7 +23,7 @@ const GalleryTab = () => {
     const videoId = localStorage.getItem("drafft_video_id");
     if (videoId) {
       // Using the same endpoint as the editor
-      setVideoUrl(`https://api.pixelcut.shop/download/${videoId}`);
+      setVideoUrl(`http://localhost:8000/download/${videoId}`);
     }
   }, []);
 

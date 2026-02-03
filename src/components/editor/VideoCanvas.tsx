@@ -36,7 +36,7 @@ const VideoCanvas = () => {
 
   // --- NEW: Helper function to load the video from the backend ---
   const loadRemoteVideo = (id: string) => {
-    const remoteUrl = `https://api.pixelcut.shop/download/${id}?t=${Date.now()}`;
+    const remoteUrl = `http://localhost:8000/download/${id}?t=${Date.now()}`;
     setVideoUrl(remoteUrl);
 
     const tempVideo = document.createElement("video");

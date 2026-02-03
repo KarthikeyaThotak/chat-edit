@@ -184,7 +184,7 @@ const LobbyTab = () => {
       const aiFormData = new FormData();
       aiFormData.append("video", selectedVideo);
 
-      const aiResponse = await fetch("https://generativetranscript.pixelcut.shop/generate-transcript", {
+      const aiResponse = await fetch("http://localhost:8001/generate-transcript", {
         method: "POST",
         body: aiFormData,
       });
@@ -233,7 +233,7 @@ const LobbyTab = () => {
       finalFormData.append("video", selectedVideo);
       finalFormData.append("transcript", JSON.stringify(transcriptData));
 
-      const finalResponse = await fetch("https://api.pixelcut.shop/upload", {
+      const finalResponse = await fetch("http://localhost:8000/upload", {
         method: "POST",
         body: finalFormData,
       });
