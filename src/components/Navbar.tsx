@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import SegmentedControl from "./SegmentedControl";
 import ThemeToggle from "./ThemeToggle";
+import AuthModal from "./AuthModal";
+import { useAuth } from "@/hooks/useAuth";
+import { LogOut } from "lucide-react";
 
 type TabType = "lobby" | "editor" | "studio";
 
@@ -10,7 +14,20 @@ interface NavbarProps {
 }
 
 const Navbar = ({ activeTab, onTabChange }: NavbarProps) => {
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
+    <>
     <header className="fixed top-0 left-0 right-0 h-20 z-50 flex items-center justify-center px-4">
       {/* Floating Glass Navbar */}
       <motion.nav 
@@ -37,7 +54,7 @@ const Navbar = ({ activeTab, onTabChange }: NavbarProps) => {
           
           {/* Brand Text */}
           <div className="flex items-baseline">
-            <span className="text-sm font-bold text-foreground tracking-tight">PixelCut</span>
+            <span className="text-sm font-bold text-foreground tracking-tight">Drafft</span>
             <span className="text-sm font-medium text-primary ml-0.5">AI</span>
           </div>
         </motion.div>
@@ -62,28 +79,59 @@ const Navbar = ({ activeTab, onTabChange }: NavbarProps) => {
             whileHover={{ scale: 1.02 }}
           >
             <span className="relative flex h-2 w-2">
-              <span className="animate-success-pulse absolute inline-flex h-full w-full rounded-full bg-success"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
             </span>
             <span className="text-xs font-medium text-success">Live</span>
           </motion.div>
 
-          {/* Profile */}
-          <motion.button 
-            className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-indigo-500 flex items-center justify-center overflow-hidden group"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <motion.div 
-              className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100"
-              animate={{ x: ['-100%', '100%'] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-            />
-            <span className="relative text-xs font-bold text-white">JD</span>
-          </motion.button>
+          {/* Auth / Profile */}
+          {isAuthenticated ? (
+            <div className="flex items-center gap-1.5">
+              {/* Logout Button */}
+              <motion.button
+                onClick={logout}
+                className="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center hover:bg-destructive/10 hover:text-destructive transition-colors"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title="Sign out"
+              >
+                <LogOut className="w-4 h-4" />
+              </motion.button>
+
+              {/* Profile Avatar */}
+              <motion.button 
+                className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-indigo-500 flex items-center justify-center overflow-hidden group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title={user?.name}
+              >
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100"
+                  animate={{ x: ['-100%', '100%'] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                />
+                <span className="relative text-xs font-bold text-white">
+                  {user?.name ? getInitials(user.name) : "U"}
+                </span>
+              </motion.button>
+            </div>
+          ) : (
+            <motion.button
+              onClick={() => setAuthModalOpen(true)}
+              className="px-4 py-2 rounded-xl bg-foreground text-background text-xs font-semibold hover:bg-foreground/90 transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Sign In
+            </motion.button>
+          )}
         </div>
       </motion.nav>
     </header>
+    
+    <AuthModal open={authModalOpen} onOpenChange={setAuthModalOpen} />
+    </>
   );
 };
 
