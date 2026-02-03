@@ -12,7 +12,13 @@ from dotenv import load_dotenv
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 # Add parent directory to path to import database module
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Try multiple paths for Docker compatibility
+_backend_dir = os.path.dirname(os.path.abspath(__file__))
+_project_root = os.path.dirname(_backend_dir)
+sys.path.append(_project_root)
+# Also try /root/project for Docker
+if os.path.exists("/root/project/database"):
+    sys.path.append("/root/project")
 from database.db_connection import DatabaseConnection
 
 # Import tools and agent (run from backend dir so tools.py and tools/video-cli are available)

@@ -38,6 +38,7 @@ services:
     volumes:
       - ./backend:/app
       - ./backend/uploads:/app/uploads
+      - ./database:/root/project/database
       - ./:/root/project
     depends_on:
       mysql:
