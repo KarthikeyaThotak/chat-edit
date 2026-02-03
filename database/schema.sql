@@ -1,21 +1,21 @@
--- Create database
-CREATE DATABASE IF NOT EXISTS pixelcut_db;
-USE pixelcut_db;
+-- Drafft Database Schema
+-- This file initializes the database tables for the Drafft application
 
--- If you already have the videos table, add transcript_path with:
--- ALTER TABLE videos ADD COLUMN transcript_path VARCHAR(500) AFTER file_url;
+CREATE DATABASE IF NOT EXISTS drafft_db;
+USE drafft_db;
 
--- Create videos table
+-- Videos table to store uploaded videos and their transcripts
 CREATE TABLE IF NOT EXISTS videos (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     filename VARCHAR(255) NOT NULL,
     file_path VARCHAR(500) NOT NULL,
     file_url VARCHAR(500),
-    transcript_path VARCHAR(500),
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     file_size BIGINT,
     duration FLOAT,
+    transcript_path VARCHAR(500),
     status VARCHAR(50) DEFAULT 'active',
-    INDEX idx_status (status),
-    INDEX idx_uploaded_at (uploaded_at)
-);
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_uploaded_at (uploaded_at),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
